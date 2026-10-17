@@ -24,6 +24,7 @@ df = df[['Hospital Number', 'NHS Number', 'Date of Birth', 'Gender', 'Ethnicity'
          'Endophthalmitis After First Injection', 'Uveitis After First Injection', 'Retinal Detachment After First Injection', "Surgery After 1st Injection", 
          'Baseline VA Date', 'Baseline VA Letter Score', 'VA Date', 'VA Letter Score']]
 
+"""Date of Birth -> Age"""
 #df["Date of Birth"] = pd.to_datetime(df["Date of Birth"])
 #today = pd.Timestamp.today()
 #df["Age"] = (
@@ -41,7 +42,6 @@ def combine(x):
 merged_df = (df.groupby(['Hospital Number', 'NHS Number'], as_index = False)
              .agg(combine))
 
-####editing here#### 
 """remove pts w/ recorded cataract and PPV"""
 cleaned_df = merged_df[
     (merged_df["Surgery After 1st Injection"] != "Cataract") &
