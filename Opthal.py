@@ -1,15 +1,24 @@
 # Author: Shuyi Wu
-# Date: 17 October 2026
+# Date: 21 October 2026
 # Description: Selection of data
 
 import pandas as pd
 import numpy
+import random
 
+"""to pseudonymisation data"""
+
+df = pd.read_csv("VAoT.csv")
+
+def randomise(n):
+    rng = random.Random(str(n))
+    return rng.randint(1, len(df))
+
+df["Hospital Number"] = [randomise(n) for n in df["Hospital Number"]]
+df["NHS Number"] = [randomise(n) for n in df["NHS Number"]]
+df["Responsible Clinician at 1st Injection"] = [randomise(n) for n in df["Responsible Clinician at 1st Injection"]]
 
 #to create dictionary of data
-
-df = pd.read_csv("VAoT_anon.csv")
-
 
 """Re-arrange dataframe"""
 #(patient and location characteristics) age, sex, ethnicity, responsible clinician, hospital location, L/R eye, both eyes?, indication, date of 1st injection, drug used,
@@ -24,7 +33,6 @@ df = df[['Hospital Number', 'NHS Number', 'Date of Birth', 'Gender', 'Ethnicity'
          'Endophthalmitis After First Injection', 'Uveitis After First Injection', 'Retinal Detachment After First Injection', "Surgery After 1st Injection", 
          'Baseline VA Date', 'Baseline VA Letter Score', 'VA Date', 'VA Letter Score']]
 
-"""Date of Birth -> Age"""
 #df["Date of Birth"] = pd.to_datetime(df["Date of Birth"])
 #today = pd.Timestamp.today()
 #df["Age"] = (
