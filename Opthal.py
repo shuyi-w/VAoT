@@ -17,10 +17,9 @@ def randomise(n):
 df["Hospital Number"] = [randomise(n) for n in df["Hospital Number"]]
 df["NHS Number"] = [randomise(n) for n in df["NHS Number"]]
 df["Responsible Clinician at 1st Injection"] = [randomise(n) for n in df["Responsible Clinician at 1st Injection"]]
+df["Hospital of 1st Injection"] = [randomise(n) for n in df["Hospital of 1st Injection"]]
 
-#to create dictionary of data
-
-"""Re-arrange dataframe"""
+"""re-arrange csv into dataframe"""
 #(patient and location characteristics) age, sex, ethnicity, responsible clinician, hospital location, L/R eye, both eyes?, indication, date of 1st injection, drug used,
 #(follow-up): no. of visits, follow up interval, delay in days,
 #(variables prior): diabetic, cataract, glaucoma/glaucoma surgery, RD, PPV, intraretinal fluid, sub retinal fluid, intraretinal haemorrhage, subretinal haemorrhage,
@@ -32,6 +31,9 @@ df = df[['Hospital Number', 'NHS Number', 'Date of Birth', 'Gender', 'Ethnicity'
          'Current Diabetic Status', 'Prior Cataract Surgery', 'Prior Glaucoma', 'Prior Glaucoma Surgery', 'Prior RD Surgery', 'Prior PPV Surgery', 'Prior Intraretinal Fluid', 'Prior Subretinal Fluid', 'Prior Intraretinal Haemorrhage', 'Prior Subretinal Haemorrhage', 
          'Endophthalmitis After First Injection', 'Uveitis After First Injection', 'Retinal Detachment After First Injection', "Surgery After 1st Injection", 
          'Baseline VA Date', 'Baseline VA Letter Score', 'VA Date', 'VA Letter Score']]
+
+
+#"""DoB -> Age"""
 
 #df["Date of Birth"] = pd.to_datetime(df["Date of Birth"])
 #today = pd.Timestamp.today()
@@ -51,11 +53,15 @@ merged_df = (df.groupby(['Hospital Number', 'NHS Number'], as_index = False)
              .agg(combine))
 
 """remove pts w/ recorded cataract and PPV"""
+
 cleaned_df = merged_df[
-    (merged_df["Surgery After 1st Injection"] != "Cataract") &
+    #(merged_df[~merged_df["Surgery After 1st Injection"].str.contains('Cataract', na = False)]) &
     (merged_df["Prior Cataract Surgery"] != 1) &
     (merged_df["Prior PPV Surgery"] != 1)
 ]
+
+#drop Prior Cataract and Prior PPV columns
+cleaned_df = cleaned_df.drop(['Prior Cataract Surgery', 'Prior PPV Surgery'], axis=1)
 
 """prints out df to csv file"""
 cleaned_df.to_csv("VAoT_reorganised.csv")
